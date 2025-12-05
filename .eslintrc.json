@@ -11,8 +11,7 @@
     },
     "rules": {
         "indent": [
-            "error",
-            "esp"
+            "error", 2
         ],
         "linebreak-style": [
             "error",
