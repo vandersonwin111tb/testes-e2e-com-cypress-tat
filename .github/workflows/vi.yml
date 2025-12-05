@@ -1,6 +1,5 @@
 # .github/workflows/ci.yml
-
-name: ci
+name: CI
 
 on:
   push:
@@ -12,17 +11,27 @@ jobs:
   eslint:
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v3
-    - name: Install modules
-      run: npm install
-    - name: Run ESLint
-      run: npm run lint
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run ESLint
+        run: npm run lint
+
   cypress-tests-desktop:
     needs: eslint
     runs-on: ubuntu-22.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
       - name: Run end-to-end tests on desktop viewport 🧪
         uses: cypress-io/github-action@v5
         env:
@@ -32,12 +41,17 @@ jobs:
           CYPRESS_MAILOSAUR_API_KEY: ${{ secrets.CYPRESS_MAILOSAUR_API_KEY }}
         with:
           command: npm test
+
   cypress-tests-tablet:
     needs: eslint
     runs-on: ubuntu-22.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
       - name: Run end-to-end tests on tablet viewport 🧪
         uses: cypress-io/github-action@v5
         env:
@@ -45,3 +59,4 @@ jobs:
           CYPRESS_USER_PASSWORD: ${{ secrets.CYPRESS_USER_PASSWORD }}
         with:
           command: npm run test:tablet
+
