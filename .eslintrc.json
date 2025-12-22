@@ -1,3 +1,5 @@
+// .eslintrc.json
+
 {
     "env": {
         "browser": true,
@@ -7,11 +9,12 @@
     },
     "extends": "eslint:recommended",
     "parserOptions": {
-        "ecmaVersion": 15
+        "ecmaVersion": 12
     },
     "rules": {
         "indent": [
-            "error", 2
+            "error",
+            2
         ],
         "linebreak-style": [
             "error",
@@ -24,6 +27,9 @@
         "semi": [
             "error",
             "never"
+        ],
+        "no-trailing-spaces": [
+            "error"
         ]
     }
 }
