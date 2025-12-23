@@ -24,7 +24,7 @@ Cypress.Commands.add('guiLogin', (
   cy.get('#password').type(password, { log: false })
   cy.contains('button', 'Login').click()
   cy.wait('@getNotes')
-  cy.contains('Your Notes', { timeout: 15000 }).should('be.visible')
+  cy.contains('h1', 'Your Notes').should('be.visible')
 })
 
 Cypress.Commands.add('sessionLogin', (
