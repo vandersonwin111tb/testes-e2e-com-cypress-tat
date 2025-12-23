@@ -24,7 +24,7 @@ Cypress.Commands.add('guiLogin', (
   cy.get('#password').type(password, { log: false })
   cy.contains('button', 'Login').click()
   // cy.wait('@getNotes')
-  cy.contains('a', 'Create a new note').should('be.visible')
+  cy.contains('Create a new note').should('be.visible')
 })
 
 Cypress.Commands.add('sessionLogin', (
