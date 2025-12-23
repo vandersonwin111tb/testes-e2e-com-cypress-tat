@@ -18,7 +18,7 @@ Cypress.Commands.add('guiLogin', (
   username = Cypress.env('USER_EMAIL'),
   password = Cypress.env('USER_PASSWORD')
 ) => {
-  cy.intercept('GET', '**/notes').as('getNotes')
+  cy.intercept('GET', '**/api/notes').as('getNotes')
   cy.visit('/login')
   cy.get('#email').type(username)
   cy.get('#password').type(password, { log: false })
