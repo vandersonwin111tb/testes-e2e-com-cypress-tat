@@ -2,7 +2,7 @@
 
 describe('Login', () => {
   it('successfully logs in', () => {
-    cy.intercept('GET', '**/api/notes').as('getNotes')
+    // cy.intercept('GET', '**/api/notes').as('getNotes')
 
     cy.guiLogin()
     // cy.wait('@getNotes')
