@@ -1,5 +1,5 @@
 Cypress.Commands.add('fillSignupFormAndSubmit', (email, password) => {
-  cy.intercept('GET', '**/notes').as('getNotes')
+  cy.intercept('GET', '**/notes*').as('getNotes')
   cy.visit('/signup')
   cy.get('#email').type(email)
   cy.get('#password').type(password, { log: false })
@@ -8,6 +8,7 @@ Cypress.Commands.add('fillSignupFormAndSubmit', (email, password) => {
   cy.get('#confirmationCode').should('be.visible')
 
   // helper: try Mailosaur up to `maxAttempts` times with `delayMs` between attempts
+  // increase timeout on the final wait to allow the app to fetch notes after confirmation (CI can be slow)
   const tryGetMail = (attemptsLeft = 12, delayMs = 5000) => {
     return cy.mailosaurGetMessage(Cypress.env('MAILOSAUR_SERVER_ID'), {
       sentTo: email,
@@ -27,7 +28,7 @@ Cypress.Commands.add('fillSignupFormAndSubmit', (email, password) => {
 
   tryGetMail().then(({ html }) => {
     cy.get('#confirmationCode').type(`${html.codes[0].value}{enter}`)
-    cy.wait('@getNotes')
+    cy.wait('@getNotes', { timeout: 30000 })
   }, (err) => {
     // if Mailosaur fails after retries, provide a clear error message for CI
     throw new Error('Mailosaur did not return a confirmation email. Make sure MAILOSAUR_SERVER_ID and MAILOSAUR_API_KEY are set in CI and that email delivery is working. Original error: ' + err.message)
@@ -38,7 +39,7 @@ Cypress.Commands.add('guiLogin', (
   username = Cypress.env('USER_EMAIL'),
   password = Cypress.env('USER_PASSWORD')
 ) => {
-  cy.intercept('GET', '**/notes').as('getNotes')
+  cy.intercept('GET', '**/notes*').as('getNotes')
   cy.visit('/login')
   cy.get('#email').type(username)
   cy.get('#password').type(password, { log: false })

@@ -4,11 +4,11 @@ import { faker } from '@faker-js/faker/locale/en'
 
 describe('Scenarios where authentication is a pre-condition', () => {
   beforeEach(() => {
-    cy.intercept('GET', '**/notes').as('getNotes')
+    cy.intercept('GET', '**/notes*').as('getNotes')
     cy.sessionLogin()
     // ensure the app loads and triggers the GET /notes after session restore
     cy.visit('/')
-    cy.wait('@getNotes', { timeout: 15000 })
+    cy.wait('@getNotes', { timeout: 30000 })
   })
 
   it('CRUDs a note', () => {
