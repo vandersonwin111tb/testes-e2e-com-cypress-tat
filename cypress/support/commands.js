@@ -19,6 +19,7 @@ Cypress.Commands.add('fillSignupFormAndSubmit', (email, password) => {
         if (attemptsLeft <= 1) {
           throw err
         }
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
         return cy.wait(delayMs).then(() => tryGetMail(attemptsLeft - 1, delayMs))
       }
     )
@@ -62,7 +63,7 @@ Cypress.Commands.add('programmaticLogin', (
       if (resp.body && resp.body.token) {
         cy.visit('/')
         cy.window().then((win) => {
-          try { win.localStorage.setItem('token', resp.body.token) } catch (e) {}
+          try { win.localStorage.setItem('token', resp.body.token) } catch (e) { /* ignore localStorage write errors (some browsers) */ }
         })
       } else {
         // visit to allow cookies from authentication response to be applied
@@ -200,9 +201,11 @@ Cypress.Commands.add('fillSettingsFormAndSubmit', () => {
       // attempt to click the Purchase button if enabled quickly; chain to the fallback request correctly
       return cy.contains('button', 'Purchase', { timeout: 2000 }).then($btn => {
         if (!$btn.prop('disabled')) {
-          return cy.wrap($btn).click().then(() => cy.window().then(win => win.fetch('/prod/billing', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ storage: 1, name: 'Mary Doe' }) })))
+          cy.wrap($btn).click()
+        } else {
+          cy.log('Purchase button is disabled; performing billing request fallback')
         }
-        cy.log('Purchase button is disabled; performing billing request fallback')
+      }).then(() => {
         return cy.window().then(win => win.fetch('/prod/billing', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ storage: 1, name: 'Mary Doe' }) }))
       }).then((resp) => {
         cy.log('billing response status: ' + resp.status)
